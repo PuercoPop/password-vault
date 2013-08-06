@@ -6,12 +6,12 @@ A passwords manager for emacs. It builds upon the pattern described in the patte
 
 ## In your init.el
 ```elisp
-(1password-register-secrets-file "passwords")
+(password-vault-register-secrets-file "passwords")
 ;; Or the module in which you keep your passwords
 ```
 
 ```elisp
-M-x 1password
+M-x password-vault
 ```
 
 # License

@@ -1,7 +1,7 @@
-;;; 1password.el --- A Password manager for Emacs.
+;;; password-vault.el --- A Password manager for Emacs.
 
 ;;; AuthorL Javier "PuercoPop" Olaechea <pirata@gmail.com>
-;;; URL: http://github.com/PuercoPop/1password.el
+;;; URL: http://github.com/PuercoPop/password-vault.el
 ;;; Version: 20130721
 ;;; Keywords: password, productivity
 
@@ -10,8 +10,8 @@
 ;; It builds upon the pattern described in this post:
 ;; http://emacs-fu.blogspot.com/2011/02/keeping-your-secrets-secret.html
 
-;; Usage: (1password-register-secrets-file 'secrets.el)
-;; M-x 1password
+;; Usage: (password-vault-register-secrets-file 'secrets.el)
+;; M-x password-vault
 
 ;;; License:
 ;; Copying is an act of love, please copy. ♡
@@ -27,35 +27,35 @@
 ;; So that locate-library works properly.
 (setq load-file-rep-suffixes (append load-file-rep-suffixes '(".gpg")))
 
-(define-derived-mode 1password-mode special-mode "1password"
+(define-derived-mode password-vault-mode special-mode "password-vault"
   "Major mode from copying the passwords you store in Emacs to the clipboard")
 
-(defgroup 1password nil
+(defgroup password-vault nil
   "A password manager for Emacs"
-  :group '1password)
+  :group 'password-vault)
 
-(defcustom 1password-passwords nil
+(defcustom password-vault-passwords nil
   "A alist containing the passwords."
-  :group '1password)
+  :group 'password-vault)
 
 
-(defun 1password-button-action-callback (button)
+(defun password-vault-button-action-callback (button)
   ""
   (let ((variable-name (button-label button)))
     (x-select-text (symbol-value (intern variable-name)))))
 
-(defun 1password-make-button (service-name password)
+(defun password-vault-make-button (service-name password)
   (let* ((button-start (point))
          (button-end (+ button-start (length service-name)))) 
     (insert service-name)
     (make-text-button button-start button-end
                       'follow-link t ;; Action also binds the left click :D
-                      'action '1password-button-action-callback
+                      'action 'password-vault-button-action-callback
                       'help-echo "Copy to Clipboard")))
 
 ;;;###autoload
-(defun 1password-register-secrets-file (module)
-  "Load the setq forms to the module to the 1passwords."
+(defun password-vault-register-secrets-file (module)
+  "Load the setq forms to the module to the password-vaults."
   (with-current-buffer (find-file-noselect
                       (locate-library module) t)
     (setq buffer-read-only t)
@@ -64,23 +64,23 @@
       (when (equal (car sexp) 'setq)
         (let ((pairs (cdr sexp)))
           (while pairs 
-            (add-to-list '1password-passwords `(,(car pairs) . ,(cadr pairs)))
+            (add-to-list 'password-vault-passwords `(,(car pairs) . ,(cadr pairs)))
             (setq pairs (cddr pairs))))))
     (setq buffer-read-only nil)))
 
 ;;;###autoload
-(defun 1password ()
+(defun password-vault ()
   (interactive)
-  (let ((1password-buffer (get-buffer-create "*1password*")))
-    (switch-to-buffer 1password-buffer)
+  (let ((password-vault-buffer (get-buffer-create "*password-vault*")))
+    (switch-to-buffer password-vault-buffer)
     (set-buffer-major-mode (current-buffer))
-    (loop for (key . value) in  1password-passwords
+    (loop for (key . value) in  password-vault-passwords
           do
-          (1password-make-button (symbol-name key) value)
+          (password-vault-make-button (symbol-name key) value)
           (insert "\n"))
     (goto-char (point-min))))
 
-(add-to-list 'auto-mode-alist (cons "*1password*" '1password-mode))
+(add-to-list 'auto-mode-alist (cons "*password-vault*" 'password-vault-mode))
 
-(provide '1password)
-;;; 1password.el ends here
+(provide 'password-vault)
+;;; password-vault.el ends here
