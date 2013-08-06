@@ -18,7 +18,6 @@
 
 ;;; Todo:
 ;; make the keymap for the major mode use n and p to go next password
-;; Use a minibuffer instead of a buffer
 ;; Test that the register-secrets-file not only parse one setq form
 
 
@@ -29,7 +28,7 @@
 ;; So that locate-library works properly.
 (setq load-file-rep-suffixes (append load-file-rep-suffixes '(".gpg")))
 
-(define-derived-mode 1password fundamental-mode "1password"
+(define-derived-mode 1password-mode special-mode "1password"
   "Major mode from copying the passwords you store in Emacs to the clipboard")
 
 (defgroup 1password nil
@@ -74,12 +73,14 @@
   (interactive)
   (let ((1password-buffer (get-buffer-create "*1password*")))
     (switch-to-buffer 1password-buffer)
-    (erase-buffer)
+    (set-buffer-major-mode (current-buffer))
     (loop for (key . value) in  1password-passwords
           do
           (1password-make-button (symbol-name key) value)
           (insert "\n"))
     (goto-char (point-min))))
+
+(add-to-list 'auto-mode-alist (cons "*1password*" '1password-mode))
 
 (provide '1password)
 ;;; 1password.el ends here
