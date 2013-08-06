@@ -18,7 +18,6 @@
 
 ;;; Todo:
 ;; make the keymap for the major mode use n and p to go next password
-;; Test that the register-secrets-file not only parse one setq form
 
 
 ;;; Code:
@@ -66,7 +65,8 @@
         (let ((pairs (cdr sexp)))
           (while pairs 
             (add-to-list '1password-passwords `(,(car pairs) . ,(cadr pairs)))
-            (setq pairs (cddr pairs))))))))
+            (setq pairs (cddr pairs))))))
+    (setq buffer-read-only nil)))
 
 ;;;###autoload
 (defun 1password ()
