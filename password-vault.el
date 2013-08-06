@@ -26,6 +26,8 @@
 
 ;; So that locate-library works properly.
 (setq load-file-rep-suffixes (append load-file-rep-suffixes '(".gpg")))
+(unless lexical-binding
+    (setq lexical-binding t))
 
 (define-derived-mode password-vault-mode special-mode "password-vault"
   "Major mode from copying the passwords you store in Emacs to the clipboard")
@@ -39,10 +41,14 @@
   :group 'password-vault)
 
 
-(defun password-vault-button-action-callback (button)
-  ""
-  (let ((variable-name (button-label button)))
-    (x-select-text (symbol-value (intern variable-name)))))
+(defun password-vault-button-password (button)
+  "Return BUTTON's password ."
+  (get-text-property 1 'password button))
+
+(defun password-vault-button-action-callback (password)
+  "Return a function that when called copies the password to the clipboard."
+  (lambda (z)
+    (x-select-text password)))
 
 (defun password-vault-make-button (service-name password)
   (let* ((button-start (point))
@@ -50,7 +56,8 @@
     (insert service-name)
     (make-text-button button-start button-end
                       'follow-link t ;; Action also binds the left click :D
-                      'action 'password-vault-button-action-callback
+                      'action (apply 'password-vault-button-action-callback
+                                     (list password))
                       'help-echo "Copy to Clipboard")))
 
 ;;;###autoload
