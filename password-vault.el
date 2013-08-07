@@ -1,11 +1,12 @@
 ;;; password-vault.el --- A Password manager for Emacs. -*- lexical-binding: t -*-
 
-;;; AuthorL Javier "PuercoPop" Olaechea <pirata@gmail.com>
+;;; Author: Javier "PuercoPop" Olaechea <pirata@gmail.com>
 ;;; URL: http://github.com/PuercoPop/password-vault.el
 ;;; Version: 20130721
 ;;; Keywords: password, productivity
+;;; Package-Requires: ((cl-lib "0.2") (emacs "24"))
 
-;;; Comentary:
+;;; Commentary:
 
 ;; It builds upon the pattern described in this post:
 ;; http://emacs-fu.blogspot.com/2011/02/keeping-your-secrets-secret.html
@@ -25,11 +26,11 @@
 (eval-when-compile (require 'cl-lib))
 
 ;; So that locate-library works properly.
-(setq load-file-rep-suffixes (append load-file-rep-suffixes '(".gpg")))
+(add-to-list 'load-file-rep-suffixes ".gpg" t)
 
 
 (define-derived-mode password-vault-mode special-mode "password-vault"
-  "Major mode from copying the passwords you store in Emacs to the clipboard")
+  "Major mode for copying the passwords you store in Emacs to the clipboard")
 
 (defgroup password-vault nil
   "A password manager for Emacs"
@@ -49,8 +50,8 @@
   (get-text-property 1 'password button))
 
 (defun password-vault-button-action-callback-factory (password)
-  "Return a function that when called copies the password to the clipboard."
-  (lambda (z)
+  "Return a function that when called copies PASSWORD to the clipboard."
+  (lambda (_)
     (apply interprogram-cut-function (list password))))
 
 (defun password-vault-make-button (service-name password)
@@ -66,11 +67,11 @@
 
 ;;;###autoload
 (defun password-vault-register-secrets-file (module)
-  "Load the setq forms to the module to the password-vaults."
+  "Load the setq forms to the MODULE to the password-vaults."
   (add-to-list 'password-vault-secret-files module))
 
 (defun password-vault-update-passwords-helper (module)
-  "Locate module and add them to the alist."
+  "Locate MODULE and add them to the alist."
   (with-current-buffer (find-file-noselect
                       (locate-library module) t)
     (setq buffer-read-only t)
@@ -100,14 +101,12 @@
 
   (let ((password-vault-buffer (get-buffer-create "*password-vault*")))
     (switch-to-buffer password-vault-buffer)
-    (set-buffer-major-mode (current-buffer))
+    (password-vault-mode)
     (loop for (key . value) in  password-vault-passwords
           do
           (password-vault-make-button (symbol-name key) value)
           (insert "\n"))
     (goto-char (point-min))))
-
-(add-to-list 'auto-mode-alist (cons "*password-vault*" 'password-vault-mode))
 
 (provide 'password-vault)
 ;;; password-vault.el ends here
