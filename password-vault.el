@@ -2,7 +2,7 @@
 
 ;;; Author: Javier "PuercoPop" Olaechea <pirata@gmail.com>
 ;;; URL: http://github.com/PuercoPop/password-vault.el
-;;; Version: 20130721
+;;; Version: 20131104
 ;;; Keywords: password, productivity
 ;;; Package-Requires: ((cl-lib "0.2") (emacs "24"))
 
@@ -16,10 +16,6 @@
 
 ;;; License:
 ;; Copying is an act of love, please copy. ♡
-
-;;; Todo:
-;; make the keymap for the major mode use n and p to go next password
-
 
 ;;; Code:
 
@@ -73,7 +69,7 @@
 (defun password-vault-update-passwords-helper (module)
   "Locate MODULE and add them to the alist."
   (with-current-buffer (find-file-noselect
-                      (locate-library module) t)
+                        (locate-library module) t)
     (setq buffer-read-only t)
     (let ((sexp
            (read (buffer-substring-no-properties (point-min) (point-max)))))
