@@ -97,10 +97,10 @@
 
   (let ((password-vault-buffer (get-buffer-create "*password-vault*")))
     (switch-to-buffer password-vault-buffer)
-    (loop for (key . value) in  password-vault-passwords
-          do
-          (password-vault-make-button (symbol-name key) value)
-          (insert "\n"))
+    (cl-loop for (key . value) in  password-vault-passwords
+             do
+             (password-vault-make-button (symbol-name key) value)
+             (insert "\n"))
     (goto-char (point-min))
     (password-vault-mode)))
 
