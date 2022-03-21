@@ -1,10 +1,25 @@
 ;;; password-vault.el --- A Password manager for Emacs. -*- lexical-binding: t -*-
 
-;;; Author: Javier "PuercoPop" Olaechea <pirata@gmail.com>
-;;; URL: http://github.com/PuercoPop/password-vault
-;;; Version: 20131104
-;;; Keywords: password, productivity
-;;; Package-Requires: ((cl-lib "0.2") (emacs "24"))
+;; Author: Javier "PuercoPop" Olaechea <pirata@gmail.com>
+;; URL: http://github.com/PuercoPop/password-vault
+;; Version: 20131104
+;; Keywords: password, productivity
+;; Package-Requires: ((cl-lib "0.2") (emacs "24"))
+;; SPDX-License-Identifier: GPL-3.0-or-later
+
+;; This file is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 3, or (at your option)
+;; any later version.
+
+;; This file is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 ;;; Commentary:
 
